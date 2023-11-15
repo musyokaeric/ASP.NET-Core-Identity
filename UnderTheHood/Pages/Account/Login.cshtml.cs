@@ -26,7 +26,10 @@ namespace UnderTheHood.Pages.Account
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, "admin"),
-                    new Claim(ClaimTypes.Email, "admin@mywebsite.com")
+                    new Claim(ClaimTypes.Email, "admin@mywebsite.com"),
+                    new Claim("Department", "HR"), // access HumanResource page
+                    new Claim("Manager", "true"), // access HRManager page
+                    new Claim("Admin", "true") // access Settings page
                 };
                 var identity = new ClaimsIdentity(claims, "MyCookieAuth");
                 ClaimsPrincipal principal = new ClaimsPrincipal(identity);

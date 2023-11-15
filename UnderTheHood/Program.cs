@@ -7,6 +7,17 @@ builder.Services.AddRazorPages();
 builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", options =>
 {
     options.Cookie.Name = "MyCookieAuth";
+
+    // Specify where the login page is
+    // options.LoginPath = "/Account/Login";
+});
+
+// To add policy based authorization, we will need to configure the authorization middleware
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Admin"));
+    options.AddPolicy("HRDepartment", policy => policy.RequireClaim("Department", "HR"));
+    options.AddPolicy("HRManagerOnly", policy => policy.RequireClaim("Department", "HR").RequireClaim("Manager")); // claims chaining
 });
 
 var app = builder.Build();
