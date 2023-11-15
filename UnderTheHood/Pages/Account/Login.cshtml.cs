@@ -29,7 +29,11 @@ namespace UnderTheHood.Pages.Account
                     new Claim(ClaimTypes.Email, "admin@mywebsite.com"),
                     new Claim("Department", "HR"), // access HumanResource page
                     new Claim("Manager", "true"), // access HRManager page
-                    new Claim("Admin", "true") // access Settings page
+                    new Claim("Admin", "true"), // access Settings page
+
+                    // custom policy based authorization
+                    // HR Manager is granted access after the probation period has passed (3 months)
+                    new Claim("EmploymentDate", "2023-09-16")
                 };
                 var identity = new ClaimsIdentity(claims, "MyCookieAuth");
                 ClaimsPrincipal principal = new ClaimsPrincipal(identity);

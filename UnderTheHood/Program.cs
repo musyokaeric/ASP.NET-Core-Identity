@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
+using System.Diagnostics.Metrics;
+using UnderTheHood.Authorization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,8 +21,14 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Admin"));
     options.AddPolicy("HRDepartment", policy => policy.RequireClaim("Department", "HR"));
-    options.AddPolicy("HRManagerOnly", policy => policy.RequireClaim("Department", "HR").RequireClaim("Manager")); // claims chaining
+    options.AddPolicy("HRManagerOnly", policy => policy
+        .RequireClaim("Department", "HR")
+        .RequireClaim("Manager") // claims chaining
+        .Requirements.Add(new HRManagerProbationRequirement(3))); // HR Manager is granted access after the probation period has passed(3 months)
 });
+
+// Register the requirement handler for the custom policy based authorization
+builder.Services.AddSingleton<IAuthorizationHandler, HRManagerProbationRequirementHandler>();
 
 var app = builder.Build();
 
