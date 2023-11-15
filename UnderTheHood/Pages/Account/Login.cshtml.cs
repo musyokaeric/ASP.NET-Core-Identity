@@ -38,9 +38,16 @@ namespace UnderTheHood.Pages.Account
                 var identity = new ClaimsIdentity(claims, "MyCookieAuth");
                 ClaimsPrincipal principal = new ClaimsPrincipal(identity);
 
+                var authenticationProperties = new AuthenticationProperties
+                {
+                    // persistent cookie survives the closing of the browser session. however, the
+                    // cookie is still subject to the timespan set on program.cs
+                    IsPersistent = Credential.RememberMe
+                };
+
                 // Serialize the ClaimsPrinciple into a string, encrypt the string, and
                 // save it as a cookie in the HttpContext object
-                await HttpContext.SignInAsync("MyCookieAuth", principal);
+                await HttpContext.SignInAsync("MyCookieAuth", principal, authenticationProperties);
 
                 return RedirectToPage("/Index");
             }
@@ -59,5 +66,8 @@ namespace UnderTheHood.Pages.Account
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
+
+        [Display(Name ="Remember Me")]
+        public bool RememberMe { get; set; }
     }
 }

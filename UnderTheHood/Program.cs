@@ -14,6 +14,9 @@ builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", opt
 
     // Specify where the login page is
     // options.LoginPath = "/Account/Login";
+
+    // Cookie lifetime and browser session
+    options.ExpireTimeSpan = TimeSpan.FromSeconds(30);
 });
 
 // To add policy based authorization, we will need to configure the authorization middleware
