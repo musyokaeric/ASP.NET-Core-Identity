@@ -16,7 +16,7 @@ builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", opt
     // options.LoginPath = "/Account/Login";
 
     // Cookie lifetime and browser session
-    options.ExpireTimeSpan = TimeSpan.FromSeconds(30);
+    options.ExpireTimeSpan = TimeSpan.FromSeconds(300);
 });
 
 // To add policy based authorization, we will need to configure the authorization middleware
@@ -32,6 +32,17 @@ builder.Services.AddAuthorization(options =>
 
 // Register the requirement handler for the custom policy based authorization
 builder.Services.AddSingleton<IAuthorizationHandler, HRManagerProbationRequirementHandler>();
+
+// ===================
+// Web API Injections:
+// ===================
+
+// Register the HttpClient extension : calls the http client factory which is used to trigger the web API endpoints
+// See how IHttpClientFactory is injected and used on the HRManager Page
+builder.Services.AddHttpClient("OurWebAPI", options =>
+{
+    options.BaseAddress = new Uri("https://localhost:7009/");
+});
 
 var app = builder.Build();
 

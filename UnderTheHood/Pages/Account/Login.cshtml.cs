@@ -33,7 +33,7 @@ namespace UnderTheHood.Pages.Account
 
                     // custom policy based authorization
                     // HR Manager is granted access after the probation period has passed (3 months)
-                    new Claim("EmploymentDate", "2023-09-16")
+                    new Claim("EmploymentDate", "2023-08-16")
                 };
                 var identity = new ClaimsIdentity(claims, "MyCookieAuth");
                 ClaimsPrincipal principal = new ClaimsPrincipal(identity);
