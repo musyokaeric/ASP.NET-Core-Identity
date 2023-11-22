@@ -34,7 +34,15 @@ namespace WebDotNetIndentity.Pages.Account
 
             var result = await userManager.CreateAsync(user, RegisterViewModel.Password);
 
-            if (result.Succeeded) return RedirectToPage("/Account/Login");
+            if (result.Succeeded)
+            {
+                // Generate the confirmation token
+                var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                return Redirect(Url.PageLink(pageName: "/Account/ConfirmEmail",
+                    values: new { userId = user.Id, token = confirmationToken }) ?? "");
+
+                // return RedirectToPage("/Account/Login");
+            }
             else
                 foreach (var error in result.Errors)
                     ModelState.AddModelError("Register", error.Description);

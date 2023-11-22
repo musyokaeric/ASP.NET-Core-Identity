@@ -25,8 +25,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
 
     options.User.RequireUniqueEmail = true;
+
+    options.SignIn.RequireConfirmedEmail = true;
 })
-    .AddEntityFrameworkStores<ApplicationDbContext>(); // Specifies how the identity service connects to the database
+    .AddEntityFrameworkStores<ApplicationDbContext>() // Specifies how the identity service connects to the database
+    .AddDefaultTokenProviders(); // Generates token for email confirmation
 
 // Configure Cookie Behavior
 builder.Services.ConfigureApplicationCookie(options =>
