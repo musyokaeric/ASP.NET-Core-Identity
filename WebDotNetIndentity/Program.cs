@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebDotNetIndentity.Data;
+using WebDotNetIndentity.Data.Account;
 using WebDotNetIndentity.Services;
 using WebDotNetIndentity.Settings;
 
@@ -16,7 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 // Configure Application Identity
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     // Password Policy
     options.Password.RequiredLength = 8;
