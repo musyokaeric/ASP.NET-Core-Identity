@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Claims;
 using WebDotNetIndentity.Data.Account;
 using WebDotNetIndentity.Services;
 
@@ -36,14 +37,19 @@ namespace WebDotNetIndentity.Pages.Account
             {
                 Email = RegisterViewModel.EmailAddress,
                 UserName = RegisterViewModel.EmailAddress,
-                Department = RegisterViewModel.Department,
-                Position = RegisterViewModel.Position
             };
+
+            var claimDepartment = new Claim("Department", RegisterViewModel.Department);
+            var claimPosition = new Claim("Position", RegisterViewModel.Position);
 
             var result = await userManager.CreateAsync(user, RegisterViewModel.Password);
 
             if (result.Succeeded)
             {
+                // Add claims to the user
+                await userManager.AddClaimAsync(user, claimDepartment);
+                await userManager.AddClaimAsync(user, claimPosition);
+
                 // Generate the confirmation token
                 var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
