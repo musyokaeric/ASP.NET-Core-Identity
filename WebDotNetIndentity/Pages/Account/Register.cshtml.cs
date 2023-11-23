@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Net.Mail;
 
 namespace WebDotNetIndentity.Pages.Account
 {
@@ -38,10 +40,21 @@ namespace WebDotNetIndentity.Pages.Account
             {
                 // Generate the confirmation token
                 var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                return Redirect(Url.PageLink(pageName: "/Account/ConfirmEmail",
-                    values: new { userId = user.Id, token = confirmationToken }) ?? "");
+                var confirmationLink = Url.PageLink(pageName: "/Account/ConfirmEmail",
+                    values: new { userId = user.Id, token = confirmationToken });
 
-                // return RedirectToPage("/Account/Login");
+                // Send Email
+                var message = new MailMessage("musyokaer@gmail.com", user.Email,
+                    "Please confirm your email",
+                    $"Please click this link to confirm your email address: {confirmationLink}");
+
+                using (var emailClient = new SmtpClient("smtp-relay.brevo.com", 587))
+                {
+                    emailClient.Credentials = new NetworkCredential("musyokaer@gmail.com", "EDRbS90UOB3fsHt8"); // brevo.com SMTP & API Settings
+                    await emailClient.SendMailAsync(message);
+                }
+
+                return RedirectToPage("/Account/Login");
             }
             else
                 foreach (var error in result.Errors)
