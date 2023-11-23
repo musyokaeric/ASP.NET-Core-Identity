@@ -1,0 +1,50 @@
+﻿@page
+@model WebDotNetIndentity.Pages.Account.UserProfileModel
+@{
+}
+<h3>User Profile</h3>
+<br />
+
+<form method="post">
+    <div class="text-danger" asp-validation-summary="All"></div>
+    <div class="mb-3 row">
+        <div class="col-2">
+            <label asp-for="UserProfile.EmailAddress"></label>
+        </div>
+        <div class="col-5">
+            <input type="text" asp-for="UserProfile.EmailAddress" class="form-control" readonly />
+            <span class="text-danger" asp-validation-for="UserProfile.EmailAddress"></span>
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        <div class="col-2">
+            <label asp-for="UserProfile.Department"></label>
+        </div>
+        <div class="col-5">
+            <input type="text" asp-for="UserProfile.Department" class="form-control" />
+            <span class="text-danger" asp-validation-for="UserProfile.Department"></span>
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        <div class="col-2">
+            <label asp-for="UserProfile.Position"></label>
+        </div>
+        <div class="col-5">
+            <input type="text" asp-for="UserProfile.Position" class="form-control" />
+            <span class="text-danger" asp-validation-for="UserProfile.Position"></span>
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        <div class="col-2">
+            <input type="submit" class="btn btn-primary" value="Save" />
+        </div>
+    </div>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success" role="alert">@Model.SuccessMessage</div>
+}        
