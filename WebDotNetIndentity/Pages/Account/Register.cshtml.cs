@@ -4,16 +4,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Mail;
+using WebDotNetIndentity.Services;
 
 namespace WebDotNetIndentity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
         private readonly UserManager<IdentityUser> userManager;
+        private readonly IEmailService emailService;
 
-        public RegisterModel(UserManager<IdentityUser> userManager)
+        public RegisterModel(UserManager<IdentityUser> userManager, IEmailService emailService)
         {
             this.userManager = userManager;
+            this.emailService = emailService;
         }
 
         [BindProperty]
@@ -44,15 +47,9 @@ namespace WebDotNetIndentity.Pages.Account
                     values: new { userId = user.Id, token = confirmationToken });
 
                 // Send Email
-                var message = new MailMessage("musyokaer@gmail.com", user.Email,
+                await emailService.SendAsync("musyokaer@gmail.com", user.Email,
                     "Please confirm your email",
                     $"Please click this link to confirm your email address: {confirmationLink}");
-
-                using (var emailClient = new SmtpClient("smtp-relay.brevo.com", 587))
-                {
-                    emailClient.Credentials = new NetworkCredential("musyokaer@gmail.com", "EDRbS90UOB3fsHt8"); // brevo.com SMTP & API Settings
-                    await emailClient.SendMailAsync(message);
-                }
 
                 return RedirectToPage("/Account/Login");
             }
