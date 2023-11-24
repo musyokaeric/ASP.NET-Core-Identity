@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using QRCoder;
 using System.ComponentModel.DataAnnotations;
 using WebDotNetIndentity.Data.Account;
 
@@ -30,9 +31,13 @@ namespace WebDotNetIndentity.Pages.Account
             var user = await userManager.GetUserAsync(User);
             if (user != null)
             {
+                // Display security key
                 await userManager.ResetAuthenticatorKeyAsync(user);
                 var key = await userManager.GetAuthenticatorKeyAsync(user);
                 ViewModel.Key = key ?? string.Empty;
+
+                // Display QR code
+                ViewModel.QRCodeBytes = GenerateQRCodeBytes("ASP.NET IdentityWeb App", ViewModel.Key, user.Email ?? string.Empty);
             }
         }
 
@@ -56,6 +61,17 @@ namespace WebDotNetIndentity.Pages.Account
             }
             return Page();
         }
+
+        private Byte[] GenerateQRCodeBytes(string provider, string key, string userEmail)
+        {
+            var qrCodeGenerator = new QRCodeGenerator();
+            var qrCodeData = qrCodeGenerator.CreateQrCode(
+                $"otpauth://totp/{provider}:{userEmail}?secret={key}&issuer={provider}",
+                QRCodeGenerator.ECCLevel.Q);
+
+            var qrCode = new PngByteQRCode(qrCodeData);
+            return qrCode.GetGraphic(20);
+        }
     }
 
     public class SetupMFAViewModel
@@ -65,5 +81,7 @@ namespace WebDotNetIndentity.Pages.Account
         [Required]
         [Display(Name = "Security Code")]
         public string SecurityCode { get; set; } = string.Empty;
+
+        public Byte[]? QRCodeBytes { get; set; }
     }
 }
