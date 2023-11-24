@@ -39,10 +39,18 @@ namespace WebDotNetIndentity.Pages.Account
             {
                 if(result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("/Account/LoginTwoFactor",
+                    // Redirect to Email 2FA
+                    //return RedirectToPage("/Account/LoginTwoFactor",
+                    //    new
+                    //    {
+                    //        EmailAddress = Credential.EmailAddress,
+                    //        RememberMe = Credential.RememberMe
+                    //    });
+
+                    // Redirect to Authenticator App MFA
+                    return RedirectToPage("/Account/LoginTwoFactorWithAuthenticator",
                         new
                         {
-                            EmailAddress = Credential.EmailAddress,
                             RememberMe = Credential.RememberMe
                         });
                 }
