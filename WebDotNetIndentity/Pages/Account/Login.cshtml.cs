@@ -37,6 +37,16 @@ namespace WebDotNetIndentity.Pages.Account
             if (result.Succeeded) return RedirectToPage("/Index");
             else
             {
+                if(result.RequiresTwoFactor)
+                {
+                    return RedirectToPage("/Account/LoginTwoFactor",
+                        new
+                        {
+                            EmailAddress = Credential.EmailAddress,
+                            RememberMe = Credential.RememberMe
+                        });
+                }
+
                 if (result.IsLockedOut)
                     ModelState.AddModelError("Login", "You are locked out.");
                 else
