@@ -20,8 +20,12 @@ namespace WebDotNetIndentity.Pages.Account
         [BindProperty]
         public CredentialViewModel Credential { get; set; } = new CredentialViewModel();
 
-        public void OnGet()
+        [BindProperty]
+        public IEnumerable<AuthenticationScheme> ExternalLoginProviders { get; set; }
+
+        public async Task OnGet()
         {
+            ExternalLoginProviders = await signInManager.GetExternalAuthenticationSchemesAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -62,6 +66,15 @@ namespace WebDotNetIndentity.Pages.Account
             }
 
             return Page();
+        }
+
+        // LoginExternally Page Handler
+        public IActionResult OnPostLoginExternally(string provider)
+        {
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, null);
+            properties.RedirectUri = Url.Action("", "");
+
+            return Challenge(properties, provider);
         }
     }
 

@@ -45,6 +45,15 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SMTP"));
 builder.Services.AddSingleton<IEmailService, EmailService>();
 
+// Configure authentication process to use Facebook authentication
+// Right-click on project and select 'Manage User Secrets'
+// A new secrets.json file is created, but it will not be within the solutions folder.
+builder.Services.AddAuthentication().AddFacebook(options =>
+{
+    options.AppId = builder.Configuration["FacebookAppId"] ?? string.Empty;
+    options.AppSecret = builder.Configuration["FacebookAppSecret"] ?? string.Empty;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
