@@ -72,7 +72,9 @@ namespace WebDotNetIndentity.Pages.Account
         public IActionResult OnPostLoginExternally(string provider)
         {
             var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, null);
-            properties.RedirectUri = Url.Action("", "");
+            properties.RedirectUri = Url.Action(
+                "ExternalLoginCallback", // Action name
+                "Account"); // Controller name associated with the action
 
             return Challenge(properties, provider);
         }
